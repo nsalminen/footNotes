@@ -10,20 +10,20 @@ tinymce.PluginManager.add('footnotes', function (editor) {
 
     function showDialog() {
         var selectedNode = editor.selection.getNode(), name = '',
-            isFootNotes = selectedNode.tagName == 'SPAN' && editor.dom.getAttrib(selectedNode, 'class') === 'fnoteWrap';
+            isFootNotes = selectedNode.tagName == 'SUP' && editor.dom.getAttrib(selectedNode, 'class') === 'fnote';
 
         var selectIndex = (function () {
-            if (selectedNode.className == 'fnoteWrap') {
-                var num = selectedNode.childNodes[0].firstChild.nodeValue.replace(/[^0-9]/g, '');
+            if (selectedNode.className == 'fnote') {
+                var num = selectedNode.nodeValue.replace(/[^0-9]/g, '');
                 return num;
             }
             else {
-                return selectedNode.childNodes[0];
+                return selectedNode;
             }
         }());
 
         if (isFootNotes) {
-            name = selectedNode.name || decodeURIComponent(selectedNode.childNodes[0].getAttribute('data-content')) || '';
+            name = selectedNode.name || decodeURIComponent(selectedNode.getAttribute('data-content')) || '';
         }
 
         editor.windowManager.open({
@@ -53,8 +53,8 @@ tinymce.PluginManager.add('footnotes', function (editor) {
                     fixFootnoteContent = (function () {
                         return encodeURIComponent(newfootnoteContent);
                     }()),
-                    htmlTemplate = '<span class="fnoteWrap" id="#wk_ft{FN}" contenteditable="false"><button type="button" class="fnoteBtn" data-content="' + fixFootnoteContent + '">{FN}</button></span>&nbsp;',
-                    totalFootNote = editor.getDoc().querySelectorAll('.fnoteBtn'),
+                    htmlTemplate = '<sup class="fnote" id="#wk_ft{FN}" contenteditable="false" data-tippy-content="' + fixFootnoteContent + '">{FN}</button></sup>',
+                    totalFootNote = editor.getDoc().querySelectorAll('.fnote'),
                     totalCount = totalFootNote.length,
                     html;
 
@@ -73,12 +73,12 @@ tinymce.PluginManager.add('footnotes', function (editor) {
                     }
 
                     function getNext($node) {
-                        if ($node.nextAll().find('.fnoteBtn').length > 0) {
-                            if ($node.next().hasClass('fnoteBtn')) {
+                        if ($node.nextAll().find('.fnote').length > 0) {
+                            if ($node.next().hasClass('fnote')) {
                                 return $node.next().children().children();
                             }
                             else {
-                                return $node.nextAll().find('.fnoteBtn');
+                                return $node.nextAll().find('.fnote');
                             }
 
                         }
@@ -109,7 +109,7 @@ tinymce.PluginManager.add('footnotes', function (editor) {
                         return null;
                     }
 
-                    var currentClassNot_NextClass = nextInDOM('.fnoteBtn', $node);
+                    var currentClassNot_NextClass = nextInDOM('.fnote', $node);
                     return currentClassNot_NextClass;
                 }
 
@@ -142,9 +142,9 @@ tinymce.PluginManager.add('footnotes', function (editor) {
                 editor.execCommand('mceInsertContent', false, html);
 
                 // index realignment
-                $(editor.getDoc()).find('.fnoteBtn').each(function (idx) {
+                $(editor.getDoc()).find('.fnote').each(function (idx) {
                     $(this).text((idx + 1));
-                    $(this).parent().attr('id', '#wk_ft' + (idx + 1));
+                    $(this).attr('id', '#wk_ft' + (idx + 1));
                 });
             }
         });
@@ -153,8 +153,11 @@ tinymce.PluginManager.add('footnotes', function (editor) {
     editor.addCommand('mceFootnotes', showDialog);
     editor.addButton("footnotes", {
         title: 'footnote',
-        image: tinyMCE.baseURL + '/plugins/footnotes/img/footnotes.png',
+        icon: 'insert-tweet is-dashicon dashicons dashicons-admin-comments',
+        onPostRender: function () {
+            jQuery('.is-dashicon').css('font-family', 'dashicons');
+        },
         onclick: showDialog,
-        stateSelector: 'span.fnoteWrap'
+        stateSelector: 'sup.fnote'
     });
 });
