@@ -12,7 +12,7 @@ The content inserted in the textbox is inserted into the html of the editor. The
 
 In your theme's `functions.php`, add the following:
 ````
-Add footNotes plugin to TinyMCE in WordPress
+//  Add footNotes plugin to TinyMCE in WordPress
 function theme_mce_plugins( $plugins ) {
     $plugins['footnotes'] = get_template_directory_uri() . '/js/footnotes/plugin.js';
     return $plugins;
