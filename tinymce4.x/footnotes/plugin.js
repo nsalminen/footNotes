@@ -27,9 +27,9 @@ tinymce.PluginManager.add('footnotes', function(editor) {
         }
 
         editor.windowManager.open({
-            title: "Insert a contents",
+            title: "Insert content",
             id: 'footnote-dialog',
-            body: {
+            body: [{
                 type: 'textbox',
                 name: 'name',
                 multiline: true,
@@ -37,12 +37,23 @@ tinymce.PluginManager.add('footnotes', function(editor) {
                 minHeight: 100,
                 value : name
             },
+            {
+                type: 'button',
+                name: 'link',
+                text: 'Insert link',
+                onclick: function( e ) {
+                    var textareaId = jQuery('.mce-multiline').attr('id');
+                    wpActiveEditor = true;
+                    wpLink.open( textareaId );
+                    return false;
+                }
+            }],
             onSubmit: function(e) {
                 var newfootnoteContent = e.data.name,
                     fixFootnoteContent = (function () {
                         return encodeURIComponent(newfootnoteContent);
                     }()),
-                    htmlTemplate = '<span class="fnoteWrap" id="#wk_ft{FOOTNOTE_INDEX}" contenteditable="false"><button type="button" class="fnoteBtn" data-content="'+fixFootnoteContent+'">{FOOTNOTE_INDEX}</button></span>&nbsp;',
+                    htmlTemplate = '<span class="fnoteWrap" id="#wk_ft{FN}" contenteditable="false"><button type="button" class="fnoteBtn" data-content="'+fixFootnoteContent+'">{FN}</button></span>&nbsp;',
                     totalFootNote = editor.getDoc().querySelectorAll('.fnoteBtn'),
                     totalCount = totalFootNote.length,
                     html;
@@ -109,17 +120,17 @@ tinymce.PluginManager.add('footnotes', function(editor) {
                     }
                     if (selectIndex < totalCount) {
                         // modify
-                        html = replaceTmpl(htmlTemplate,{FOOTNOTE_INDEX : $(totalFootNote[selectIndex-1]).html()});
+                        html = replaceTmpl(htmlTemplate,{FN : $(totalFootNote[selectIndex-1]).html()});
                     }
                     else {
                         // anywhere add
-                        html = replaceTmpl(htmlTemplate,{FOOTNOTE_INDEX : $(totalFootNote[foundIdx]).html()});
+                        html = replaceTmpl(htmlTemplate,{FN : $(totalFootNote[foundIdx]).html()});
                         editor.selection.collapse(0);
                     }
 
                 } else {
                     // last add
-                    html = replaceTmpl(htmlTemplate,{FOOTNOTE_INDEX : totalCount + 1});
+                    html = replaceTmpl(htmlTemplate,{FN : totalCount + 1});
                     editor.selection.collapse(0);
                 }
 
