@@ -1,12 +1,12 @@
 # footNotes
-TinyMCE Editor 4.x footNotes plugin, optimized for WordPress (5.3).
+TinyMCE Editor 4.x footNotes plugin, optimized for WordPress (v5.x).
 
 ## Principle
 The content inserted in the textbox is inserted into the html of the editor. The equivalent HTML of a footnote containing the string `"This is a footnote!"`:
 
-````
+```html
 <sup id="#wk_ft1" class="fnote" contenteditable="false" data-tippy-content="This is a footnote!">1</sup>
-````
+```
 
 ## Usage
 
