@@ -1,26 +1,40 @@
 # footNotes
-tinymce Editor 4.x / 5.x FootNotes Plugin.
-> **JQuery is required (tinymce 4.x)**
-
+TinyMCE Editor 4.x footNotes plugin, optimized for WordPress (5.3)
 
 ## Principle
-
-The text entered in the insert contents window is stored in the 'data-content' attribute
+The content inserted in the textbox is inserted into the html of the editor. The equivalent HTML of a footnote containing the string `"This is a footnote!"`:
 
 ````
-//html of button inserted in editor
-<span id="#wk_ft1" class="fnoteWrap" contenteditable="false" data-mce-selected="1">
-    <button class="fnoteBtn" type="button" data-content="the text entered">1</button>
-</span>
+<sup id="#wk_ft1" class="fnote" contenteditable="false" data-tippy-content="This is a footnote!">1</sup>
 ````
 
 ## Usage
+
+In your theme's `functions.php`, add the following:
 ````
-tinymce.init({
-  selector: 'textarea',
-  plugins: [
-    'footnotes'
-  ],
-  toolbar: 'footnotes',
+Add footNotes plugin to TinyMCE in WordPress
+function theme_mce_plugins( $plugins ) {
+    $plugins['footnotes'] = get_template_directory_uri() . '/js/footnotes/plugin.js';
+    return $plugins;
+}
+add_filter( 'mce_external_plugins', 'awake_mce_plugins' );
+
+//  Add plugin button to the beginning of the toolbar
+function theme_tinymce_buttons( $buttons ) {
+    array_unshift( $buttons, 'footnotes' );
+    return $buttons;
+}
+add_filter( 'mce_buttons_2', 'awake_tinymce_buttons' );
+````
+
+In your theme's .js file, add the following:
+````
+// Decode the content of all footnotes
+$('[data-tippy-content]').each(function () {
+    $(this).attr("data-tippy-content", decodeURIComponent($(this).data("tippy-content")));
+});
+
+tippy('[data-tippy-content]', {
+    interactive: true,
 });
 ````
