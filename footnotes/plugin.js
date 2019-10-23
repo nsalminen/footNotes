@@ -153,7 +153,7 @@ tinymce.PluginManager.add('footnotes', function (editor) {
     editor.addCommand('mceFootnotes', showDialog);
     editor.addButton("footnotes", {
         title: 'footnote',
-        icon: 'insert-tweet is-dashicon dashicons dashicons-admin-comments',
+        icon: 'is-dashicon dashicons dashicons-admin-comments',
         onPostRender: function () {
             jQuery('.is-dashicon').css('font-family', 'dashicons');
         },
